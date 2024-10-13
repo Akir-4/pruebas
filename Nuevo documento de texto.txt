@@ -1,0 +1,2 @@
+shubik.postgres.database.azure.com
+1234567890.a
