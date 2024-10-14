@@ -9,6 +9,7 @@ const CreateAccountCompany: React.FC<CreateAccountCompanyProps> = ({ onCompanyLo
   const [nombreLegal, setNombreLegal] = useState('');
   const [razonSocial, setRazonSocial] = useState('');
   const [rut, setRut] = useState('');
+  const [password, setPassword] = useState('');
   const [sector, setSector] = useState('');
   const [tamano, setTamano] = useState('');
   const [direccion, setDireccion] = useState('');
@@ -24,12 +25,15 @@ const CreateAccountCompany: React.FC<CreateAccountCompanyProps> = ({ onCompanyLo
       nombre_legal: nombreLegal,
       razon_social: razonSocial,
       rut,
+      password: password,
       sector,
       tamano_empresa: tamano,
       direccion_fisica: direccion,
       telefono_principal: telefono,
       correo_electronico: email,
     };
+
+    console.log('Datos enviados:', companyData);
 
     try {
       const response = await fetch('http://127.0.0.1:8000/api/tiendas/tiendas/', {
@@ -44,10 +48,12 @@ const CreateAccountCompany: React.FC<CreateAccountCompanyProps> = ({ onCompanyLo
         const data = await response.json();
         setSuccess('Empresa registrada con éxito!');
         console.log('Registro exitoso:', data);
+
         // Limpiar los campos después de un registro exitoso
         setNombreLegal('');
         setRazonSocial('');
         setRut('');
+        setPassword('');
         setSector('');
         setTamano('');
         setDireccion('');
@@ -55,10 +61,13 @@ const CreateAccountCompany: React.FC<CreateAccountCompanyProps> = ({ onCompanyLo
         setEmail('');
       } else {
         const errorData = await response.json();
-        setError('Error al crear la empresa: ' + errorData.detail || 'Error desconocido');
+        console.log('Error en la solicitud:', errorData); // Esto imprimirá detalles del error
+        setError('Error al crear la empresa: ' + (errorData.detail || 'Error desconocido'));
       }
+
     } catch (err) {
-      setError('Error de conexión: ' + error.message);
+      setError(err instanceof Error ? err.message : 'Error inesperado');
+      console.error('Error al registrar la empresa:', err);
     }
   };
 
@@ -176,6 +185,19 @@ const CreateAccountCompany: React.FC<CreateAccountCompanyProps> = ({ onCompanyLo
                   required
                 />
               </div>
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                  Contraseña
+                </label>
+                <input
+                  type="password"
+                  id="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-gray-500 focus:border-gray-500"
+                  required
+                />
+              </div>
               <button
                 type="submit"
                 className="w-full bg-gray-800 text-white py-2 px-4 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
@@ -204,7 +226,7 @@ const CreateAccountCompany: React.FC<CreateAccountCompanyProps> = ({ onCompanyLo
               <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
                 <div className="text-white text-center">
                   <h2 className="text-3xl font-bold mb-2">Ropa Americana</h2>
-                  <p className="text-xl">Únase a nuestra red de socios comerciales</p>
+                  <p className="text-sm">Conectando vendedores con compradores</p>
                 </div>
               </div>
             </div>

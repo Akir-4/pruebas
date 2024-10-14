@@ -9,10 +9,40 @@ interface LoginCompanyProps {
 export default function LoginCompany({ onReturnToLogin, onRegisterCompany }: LoginCompanyProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Inicio de sesión de empresa enviado', { email, password });
+
+    const loginData = {
+      correo_electronico: email, // Asegúrate de que este nombre coincida con tu API
+      contrasena: password, // Asegúrate de que este nombre coincida con tu API
+    };
+
+    try {
+      const response = await fetch('http://127.0.0.1:8000/api/tiendas/tiendas/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(loginData),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setSuccess('Inicio de sesión exitoso!');
+        console.log('Inicio de sesión exitoso:', data);
+        // Aquí puedes manejar la redirección o cualquier otra acción tras un inicio de sesión exitoso
+      } else {
+        const errorData = await response.json();
+        console.log('Error en la solicitud:', errorData); // Esto imprimirá detalles del error
+        setError('Error al iniciar sesión: ' + (errorData.detail || 'Error desconocido'));
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error inesperado');
+      console.error('Error al iniciar sesión:', err);
+    }
   };
 
   return (
@@ -76,6 +106,8 @@ export default function LoginCompany({ onReturnToLogin, onRegisterCompany }: Log
                 Iniciar Sesión
               </button>
             </form>
+            {error && <p className="text-red-500">{error}</p>}
+            {success && <p className="text-green-500">{success}</p>}
             <p className="text-sm text-gray-600 text-center">
               ¿No tiene una cuenta empresarial?{' '}
               <button onClick={onRegisterCompany} className="text-gray-800 hover:underline">
