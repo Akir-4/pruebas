@@ -87,17 +87,29 @@ WSGI_APPLICATION = 'shubik_shop.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
+#
+#respaldo de la base de datos
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'shubik',
+#         'USER': 'postgres',
+#         'PASSWORD': '1234',
+#         'HOST': '190.44.152.202',  # o la dirección de tu servidor de base de datos
+#         'PORT': '5432',       # puerto por defecto de PostgreSQL
+#     }
+# }
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'shubik',
-        'USER': 'postgres',  # Incluye el nombre del servidor
+        'NAME': 'shubik',  # El nombre de tu base de datos
+        'USER': 'postgres',
         'PASSWORD': '1234567890.a',
-        'HOST': 'shubik.postgres.database.azure.com',  # Dirección de tu servidor
-        'PORT': '5432',  # Puerto por defecto de PostgreSQL
+        'HOST': 'shubik.postgres.database.azure.com',
+        'PORT': '5432',  # Puerto por defecto
         'OPTIONS': {
-            'sslmode': 'require',  # Habilita SSL para la conexión
+            'sslmode': 'require',  # Opcional, pero recomendado para mayor seguridad
         },
     }
 }

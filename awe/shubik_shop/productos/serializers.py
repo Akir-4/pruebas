@@ -13,10 +13,19 @@ class ProductoSerializer(serializers.ModelSerializer):
     marca_nombre = serializers.CharField(source='marca_id.marca', read_only=True)
     tipo_nombre = serializers.CharField(source='tipo_id.tipo', read_only=True)
     usuario_nombre = serializers.CharField(source='usuario_id.nombre', read_only=True)
-    
+    images = serializers.SerializerMethodField()
+
     class Meta:
         model = Producto
         fields = '__all__'
+
+    def get_images(self, obj):
+         return [
+             obj.imagen_1.url if obj.imagen_1 else None,
+             obj.imagen_2.url if obj.imagen_2 else None,
+             obj.imagen_3.url if obj.imagen_3 else None,
+             obj.imagen_4.url if obj.imagen_4 else None,
+         ]
 
 class MarcaSerializer(serializers.ModelSerializer):
     class Meta:

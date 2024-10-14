@@ -6,9 +6,9 @@ class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
         fields = ['usuario_id', 'nombre', 'usuario', 'contrasena', 'email', 'direccion', 'telefono',  'imagen']
-        extra_kwargs = {
-            'contrasena': {'write_only': True}  # Para que la contraseña solo se pueda escribir, no leer
-        }
+        # extra_kwargs = {
+        #     'contrasena': {'write_only': True}  # Para que la contraseña solo se pueda escribir, no leer
+        # }
 
     def create(self, validated_data):
         # Encripta la contraseña antes de crear el usuario

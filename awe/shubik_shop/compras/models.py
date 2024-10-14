@@ -4,6 +4,7 @@ from django.db import models
 class Subasta(models.Model):
 
     subasta_id = models.AutoField(primary_key=True)
+    tienda_id = models.ForeignKey('tiendas.Tienda', on_delete=models.CASCADE)
     producto_id = models.ForeignKey('productos.Producto', on_delete=models.CASCADE)
     fecha_inicio = models.DateField()
     fecha_termino = models.DateField()
