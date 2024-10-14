@@ -7,15 +7,17 @@ interface LoginProps {
 }
 
 export default function Login({ onCompanyLogin, onRegisterPerson }: LoginProps) {
+  const [nombre, setNombre] = useState('');
+  const [usuario, setUsuario] = useState('');
   const [email, setEmail] = useState('');
-  const [contrasena, setPassword] = useState('');
+  const [contrasena, setContrasena] = useState('');
   const [error, setError] = useState(''); // Para manejar errores
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Crear objeto de credenciales
-    const credentials = { email, contrasena };
+    const credentials = { nombre, usuario, email, contrasena }; // Incluyendo los nuevos campos
 
     try {
       const response = await fetch('http://127.0.0.1:8000/api/usuarios/usuarios/', {
@@ -26,18 +28,22 @@ export default function Login({ onCompanyLogin, onRegisterPerson }: LoginProps) 
         body: JSON.stringify(credentials),
       });
 
+      const textResponse = await response.text(); // Obtiene la respuesta como texto
+      console.log('Respuesta del servidor:', textResponse); // Imprime la respuesta
+
       if (!response.ok) {
-        throw new Error('Error al iniciar sesión');
+        const errorData = JSON.parse(textResponse); // Intenta analizar como JSON
+        throw new Error(errorData.message || 'Error al iniciar sesión');
       }
 
-      const data = await response.json();
+      const data = JSON.parse(textResponse); // Cambia a analizar el texto como JSON
 
       // Aquí puedes manejar lo que ocurre al iniciar sesión correctamente
       console.log('Inicio de sesión exitoso:', data);
       
       // Redirigir o manejar el estado de sesión según sea necesario
-    } catch (err: any) {
-      setError(err.message); // Establecer el mensaje de error
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error inesperado'); // Establecer el mensaje de error
       console.error('Error al iniciar sesión:', err);
     }
   };
@@ -53,6 +59,32 @@ export default function Login({ onCompanyLogin, onRegisterPerson }: LoginProps) 
             </p>
             {error && <p className="text-red-500">{error}</p>} {/* Mostrar error si existe */}
             <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label htmlFor="nombre" className="block text-sm font-medium text-gray-700">
+                  Nombre
+                </label>
+                <input
+                  type="text"
+                  id="nombre"
+                  value={nombre}
+                  onChange={(e) => setNombre(e.target.value)}
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-gray-500 focus:border-gray-500"
+                  required
+                />
+              </div>
+              <div>
+                <label htmlFor="usuario" className="block text-sm font-medium text-gray-700">
+                  Usuario
+                </label>
+                <input
+                  type="text"
+                  id="usuario"
+                  value={usuario}
+                  onChange={(e) => setUsuario(e.target.value)}
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-gray-500 focus:border-gray-500"
+                  required
+                />
+              </div>
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                   Correo Electrónico
@@ -74,7 +106,7 @@ export default function Login({ onCompanyLogin, onRegisterPerson }: LoginProps) 
                   type="password"
                   id="password"
                   value={contrasena}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => setContrasena(e.target.value)}
                   className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-gray-500 focus:border-gray-500"
                   required
                 />
