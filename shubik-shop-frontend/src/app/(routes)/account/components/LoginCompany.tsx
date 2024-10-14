@@ -8,6 +8,7 @@ interface LoginCompanyProps {
 
 export default function LoginCompany({ onReturnToLogin, onRegisterCompany }: LoginCompanyProps) {
   const [email, setEmail] = useState('');
+  const [nombre_Legal, setNombreLegal] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -18,6 +19,7 @@ export default function LoginCompany({ onReturnToLogin, onRegisterCompany }: Log
     const loginData = {
       correo_electronico: email, // Asegúrate de que este nombre coincida con tu API
       contrasena: password, // Asegúrate de que este nombre coincida con tu API
+      nombre_legal: nombre_Legal,
     };
 
     try {
@@ -64,6 +66,19 @@ export default function LoginCompany({ onReturnToLogin, onRegisterCompany }: Log
                   id="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-gray-500 focus:border-gray-500"
+                  required
+                />
+              </div>
+              <div>
+                <label htmlFor="nombre" className="block text-sm font-medium text-gray-700">
+                  Nombre legal
+                </label>
+                <input
+                  type="nombre"
+                  id="nombre"
+                  value={nombre_Legal}
+                  onChange={(e) => setNombreLegal(e.target.value)}
                   className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-gray-500 focus:border-gray-500"
                   required
                 />
