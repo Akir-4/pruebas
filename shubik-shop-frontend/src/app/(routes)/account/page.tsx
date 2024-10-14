@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from 'react';
 import Login from './components/Login';
 import LoginCompany from './components/LoginCompany';
@@ -21,8 +23,12 @@ const AccountPage = () => {
       {view === 'login-company' && (
         <LoginCompany onReturnToLogin={showLogin} onRegisterCompany={showRegisterCompany} />
       )}
-      {view === 'register-person' && <CreateAccountPerson />}
-      {view === 'register-company' && <CreateAccountCompany />}
+      {view === 'register-person' && (
+        <CreateAccountPerson onLogin={showLogin} />
+      )}
+      {view === 'register-company' && (
+        <CreateAccountCompany onCompanyLogin={showLoginCompany} />
+      )}
 
       <div className="pt-4 text-center">
         {view !== 'login' && <button onClick={showLogin}>Iniciar sesión como Persona</button>}

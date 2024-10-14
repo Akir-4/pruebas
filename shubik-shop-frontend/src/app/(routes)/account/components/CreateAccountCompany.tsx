@@ -1,19 +1,65 @@
 import React, { useState } from 'react';
-import Link from 'next/link';
 import Image from 'next/image';
 
-export default function RegistroEmpresa() {
+interface CreateAccountCompanyProps {
+  onCompanyLogin: () => void; // Asegúrate de que onCompanyLogin sea aceptado como prop
+}
+
+const CreateAccountCompany: React.FC<CreateAccountCompanyProps> = ({ onCompanyLogin }) => {
   const [nombreLegal, setNombreLegal] = useState('');
   const [razonSocial, setRazonSocial] = useState('');
   const [rut, setRut] = useState('');
   const [sector, setSector] = useState('');
+  const [tamano, setTamano] = useState('');
   const [direccion, setDireccion] = useState('');
   const [telefono, setTelefono] = useState('');
   const [email, setEmail] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Registro de empresa enviado', { nombreLegal, razonSocial, rut, sector, direccion, telefono, email });
+
+    const companyData = {
+      nombre_legal: nombreLegal,
+      razon_social: razonSocial,
+      rut,
+      sector,
+      tamano_empresa: tamano,
+      direccion_fisica: direccion,
+      telefono_principal: telefono,
+      correo_electronico: email,
+    };
+
+    try {
+      const response = await fetch('http://127.0.0.1:8000/api/tiendas/tiendas/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(companyData),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setSuccess('Empresa registrada con éxito!');
+        console.log('Registro exitoso:', data);
+        // Limpiar los campos después de un registro exitoso
+        setNombreLegal('');
+        setRazonSocial('');
+        setRut('');
+        setSector('');
+        setTamano('');
+        setDireccion('');
+        setTelefono('');
+        setEmail('');
+      } else {
+        const errorData = await response.json();
+        setError('Error al crear la empresa: ' + errorData.detail || 'Error desconocido');
+      }
+    } catch (err) {
+      setError('Error de conexión: ' + error.message);
+    }
   };
 
   return (
@@ -79,6 +125,19 @@ export default function RegistroEmpresa() {
                 />
               </div>
               <div>
+                <label htmlFor="tamano" className="block text-sm font-medium text-gray-700">
+                  Tamaño de la Empresa
+                </label>
+                <input
+                  type="text"
+                  id="tamano"
+                  value={tamano}
+                  onChange={(e) => setTamano(e.target.value)}
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-gray-500 focus:border-gray-500"
+                  required
+                />
+              </div>
+              <div>
                 <label htmlFor="direccion" className="block text-sm font-medium text-gray-700">
                   Dirección Física
                 </label>
@@ -124,11 +183,13 @@ export default function RegistroEmpresa() {
                 Registrar Empresa
               </button>
             </form>
+            {error && <p className="text-red-500">{error}</p>}
+            {success && <p className="text-green-500">{success}</p>}
             <p className="text-sm text-gray-600 text-center">
               ¿Ya tiene una cuenta?{' '}
-              <Link href="/iniciar-sesion" className="text-gray-800 hover:underline">
+              <button onClick={onCompanyLogin} className="text-gray-800 hover:underline">
                 Inicie sesión aquí
-              </Link>
+              </button>
             </p>
           </div>
           <div className="hidden md:block">
@@ -152,4 +213,6 @@ export default function RegistroEmpresa() {
       </div>
     </div>
   );
-}
+};
+
+export default CreateAccountCompany;

@@ -8,11 +8,38 @@ interface LoginProps {
 
 export default function Login({ onCompanyLogin, onRegisterPerson }: LoginProps) {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [contrasena, setPassword] = useState('');
+  const [error, setError] = useState(''); // Para manejar errores
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Inicio de sesión enviado', { email, password });
+    
+    // Crear objeto de credenciales
+    const credentials = { email, contrasena };
+
+    try {
+      const response = await fetch('http://127.0.0.1:8000/api/usuarios/usuarios/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(credentials),
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al iniciar sesión');
+      }
+
+      const data = await response.json();
+
+      // Aquí puedes manejar lo que ocurre al iniciar sesión correctamente
+      console.log('Inicio de sesión exitoso:', data);
+      
+      // Redirigir o manejar el estado de sesión según sea necesario
+    } catch (err: any) {
+      setError(err.message); // Establecer el mensaje de error
+      console.error('Error al iniciar sesión:', err);
+    }
   };
 
   return (
@@ -24,6 +51,7 @@ export default function Login({ onCompanyLogin, onRegisterPerson }: LoginProps) 
             <p className="text-gray-600">
               Bienvenido de nuevo. Ingrese sus credenciales para acceder a su cuenta.
             </p>
+            {error && <p className="text-red-500">{error}</p>} {/* Mostrar error si existe */}
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700">
@@ -45,7 +73,7 @@ export default function Login({ onCompanyLogin, onRegisterPerson }: LoginProps) 
                 <input
                   type="password"
                   id="password"
-                  value={password}
+                  value={contrasena}
                   onChange={(e) => setPassword(e.target.value)}
                   className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-gray-500 focus:border-gray-500"
                   required
