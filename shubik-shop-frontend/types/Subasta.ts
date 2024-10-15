@@ -1,9 +1,10 @@
-import { Producto } from "./auction";
-
+import { Producto } from './auction';
+import { Puja } from './Puja';
 export interface Subasta {
     subasta_id: number;
-    producto_id: Producto; // Relacionado con el producto que está siendo subastado
-    fecha_inicio: string;  // O 'Date' si luego la conviertes
-    fecha_termino: string; // O 'Date' si luego la conviertes
-    estado: string;
+    producto: Producto;       // Relación con el producto
+    fecha_inicio: string;      // Fecha de inicio de la subasta
+    fecha_termino: string;     // Fecha de término de la subasta
+    estado: string;            // Estado de la subasta (ej: "Activa", "Finalizada")
+    pujas: Puja[];             // Lista de pujas relacionadas con esta subasta
 }

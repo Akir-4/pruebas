@@ -21,7 +21,7 @@ const Filters: React.FC<FiltersProps> = ({ setPrendaId, setSearchQuery, setTalla
   const [selectedMarca, setSelectedMarca] = useState("");
   const [selectedTalla, setSelectedTalla] = useState(""); // Estado local para la talla
   const [selectedEstado, setSelectedEstado] = useState("");
-  const [selectedOrdenPrecio, setSelectedOrdenPrecio] = useState("");  // Estado local para el orden de precio
+
 
   useEffect(() => {
     async function fetchMarcas() {
@@ -66,8 +66,10 @@ const Filters: React.FC<FiltersProps> = ({ setPrendaId, setSearchQuery, setTalla
 
           <div className="mb-4 flex flex-col gap-2">
             <h3>Filtros</h3>
+            {/*Fitro busqueda por nombre de producto */}
             <SearchAuction onSearch={setSearchQuery} />
 
+            {/*Fitro tipo de prenda */}
             <div className="flex flex-col">
               <Label className="mb-3" htmlFor="categories">Tipo Prenda</Label>
               <select className="rounded-lg p-3" onChange={(e) => setPrendaId(Number(e.target.value))}>  {/* Llamar a setPrendaId al cambiar */}
@@ -76,9 +78,11 @@ const Filters: React.FC<FiltersProps> = ({ setPrendaId, setSearchQuery, setTalla
                 <option value="2">Camisa</option>
                 <option value="3">Pantalon</option>
                 <option value="4">Chaqueta</option>
+                <option value="5">Calzado</option>
               </select>
             </div>
 
+            {/*Fitro talla de prenda */}
             <div className="flex flex-col">
               <Label className="mb-3">Talla</Label>
               <select className="rounded-lg p-3" onChange={handleTallaChange} value={selectedTalla}>
@@ -93,6 +97,7 @@ const Filters: React.FC<FiltersProps> = ({ setPrendaId, setSearchQuery, setTalla
               </select>
             </div>
 
+            {/*Fitro estado de prenda */}
             <div className="flex flex-col">
               <Label className="mb-3">Estado</Label>
               <select className="rounded-lg p-3" onChange={handleEstadoChange} value={selectedEstado}>
@@ -106,6 +111,8 @@ const Filters: React.FC<FiltersProps> = ({ setPrendaId, setSearchQuery, setTalla
                 <option value="7">Desgastado</option>
               </select>
             </div>
+
+            {/*Fitro por marca */}
             <div className="flex flex-col">
               <Label className="mb-3">Marcas</Label>
               <select className="rounded-lg p-3" onChange={handleMarcaChange} value={selectedMarca}>
@@ -116,7 +123,7 @@ const Filters: React.FC<FiltersProps> = ({ setPrendaId, setSearchQuery, setTalla
                 ))}
               </select>
             </div>
-
+            {/*Fitro por precio */}
             <div className="mb-4 flex flex-col">
               <Label className="mb-3" htmlFor="categories">Precio</Label>
               <FilterByRadioGroup setOrdenPrecio={setOrdenPrecio} />

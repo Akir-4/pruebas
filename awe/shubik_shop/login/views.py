@@ -1,23 +1,27 @@
-from rest_framework import status
-from rest_framework.response import Response
 from rest_framework.views import APIView
-from usuario.models import Usuario # Importa el modelo de usuario correcto
-from django.contrib.auth.hashers import check_password
+from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import RefreshToken
+from usuario.models import Usuario
 
 class LoginView(APIView):
     def post(self, request):
         usuario = request.query_params.get('usuario')
         contrasena = request.query_params.get('contrasena')
-
+                
         try:
-            # Busca el usuario en la base de datos
             user = Usuario.objects.get(usuario=usuario)
+                        
+            # Compara la contraseña en texto plano
+            if user.contrasena == contrasena:
+                # Crear el token JWT manualmente usando usuario_id
+                refresh = RefreshToken()
+                refresh['user_id'] = user.usuario_id  # Establecemos usuario_id en lugar de id
 
-            # Verifica si la contraseña coincide
-            if check_password(contrasena, user.contrasena):
-                return Response({"mensaje": "Inicio de sesión exitoso"}, status=status.HTTP_200_OK)
+                return Response({
+                    'refresh': str(refresh),
+                    'access': str(refresh.access_token),
+                })
             else:
-                return Response({"error": "Contraseña incorrecta"}, status=status.HTTP_401_UNAUTHORIZED)
-
+                return Response({"error": "Contraseña incorrecta"}, status=401)
         except Usuario.DoesNotExist:
-            return Response({"error": "Usuario no encontrado"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"error": "Usuario no encontrado"}, status=404)

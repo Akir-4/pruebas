@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from .models import Usuario
-from django.contrib.auth.hashers import make_password
 
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
@@ -11,12 +10,9 @@ class UsuarioSerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
-        # Encripta la contraseña antes de crear el usuario
-        validated_data['contrasena'] = make_password(validated_data['contrasena'])
+        # Elimina el uso de make_password, guarda la contraseña tal cual
         return super(UsuarioSerializer, self).create(validated_data)
 
     def update(self, instance, validated_data):
-        # Encripta la contraseña al actualizar si está en los datos
-        if 'contrasena' in validated_data:
-            validated_data['contrasena'] = make_password(validated_data['contrasena'])
+        # Elimina el uso de make_password al actualizar los datos
         return super(UsuarioSerializer, self).update(instance, validated_data)

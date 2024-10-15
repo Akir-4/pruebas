@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from 'react';
 import Image from 'next/image';
 
@@ -7,43 +8,45 @@ interface LoginProps {
 }
 
 export default function Login({ onCompanyLogin, onRegisterPerson }: LoginProps) {
-  const [nombre, setNombre] = useState('');
-  const [usuario, setUsuario] = useState('');
-  const [email, setEmail] = useState('');
-  const [contrasena, setContrasena] = useState('');
-  const [error, setError] = useState(''); // Para manejar errores
+  const [usuario, setUsuario] = useState<string>('');  // Añadimos tipado explícito a los estados
+  const [contrasena, setContrasena] = useState<string>('');
+  const [error, setError] = useState<string>('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Crear objeto de credenciales
-    const credentials = { nombre, usuario, email, contrasena }; // Incluyendo los nuevos campos
+    setError('');
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/usuarios/usuarios/', {
+      // Envía los parámetros en la URL (como en Postman)
+      const response = await fetch(`http://127.0.0.1:8000/api/login/?usuario=${usuario}&contrasena=${contrasena}`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json', // El encabezado está dentro del objeto
         },
-        body: JSON.stringify(credentials),
       });
 
-      const textResponse = await response.text(); // Obtiene la respuesta como texto
-      console.log('Respuesta del servidor:', textResponse); // Imprime la respuesta
+      const data = await response.json(); // Respuesta de la API
 
       if (!response.ok) {
-        const errorData = JSON.parse(textResponse); // Intenta analizar como JSON
-        throw new Error(errorData.message || 'Error al iniciar sesión');
+        throw new Error(data.error || 'Error al iniciar sesión');
       }
 
-      const data = JSON.parse(textResponse); // Cambia a analizar el texto como JSON
+      // Mostrar los tokens en la consola
+      console.log('Token de acceso:', data.access);
+      console.log('Token de refresh:', data.refresh);
 
-      // Aquí puedes manejar lo que ocurre al iniciar sesión correctamente
-      console.log('Inicio de sesión exitoso:', data);
-      
-      // Redirigir o manejar el estado de sesión según sea necesario
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error inesperado'); // Establecer el mensaje de error
+      // Guardar los tokens en localStorage
+      localStorage.setItem('access_token', data.access);
+      localStorage.setItem('refresh_token', data.refresh);
+
+      console.log('Inicio de sesión exitoso');
+
+    } catch (err: any) {  // Usamos any porque no siempre es un Error
+      if (err instanceof Error) {
+        setError(err.message);  // Si es una instancia de Error, extraemos el mensaje
+      } else {
+        setError('Error inesperado');  // Si no lo es, un mensaje por defecto
+      }
       console.error('Error al iniciar sesión:', err);
     }
   };
@@ -57,21 +60,8 @@ export default function Login({ onCompanyLogin, onRegisterPerson }: LoginProps) 
             <p className="text-gray-600">
               Bienvenido de nuevo. Ingrese sus credenciales para acceder a su cuenta.
             </p>
-            {error && <p className="text-red-500">{error}</p>} {/* Mostrar error si existe */}
+            {error && <p className="text-red-500">{error}</p>}
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label htmlFor="nombre" className="block text-sm font-medium text-gray-700">
-                  Nombre
-                </label>
-                <input
-                  type="text"
-                  id="nombre"
-                  value={nombre}
-                  onChange={(e) => setNombre(e.target.value)}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-gray-500 focus:border-gray-500"
-                  required
-                />
-              </div>
               <div>
                 <label htmlFor="usuario" className="block text-sm font-medium text-gray-700">
                   Usuario
@@ -81,19 +71,6 @@ export default function Login({ onCompanyLogin, onRegisterPerson }: LoginProps) 
                   id="usuario"
                   value={usuario}
                   onChange={(e) => setUsuario(e.target.value)}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-gray-500 focus:border-gray-500"
-                  required
-                />
-              </div>
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                  Correo Electrónico
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
                   className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-gray-500 focus:border-gray-500"
                   required
                 />
@@ -110,24 +87,6 @@ export default function Login({ onCompanyLogin, onRegisterPerson }: LoginProps) 
                   className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-gray-500 focus:border-gray-500"
                   required
                 />
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <input
-                    id="remember-me"
-                    name="remember-me"
-                    type="checkbox"
-                    className="h-4 w-4 text-gray-600 focus:ring-gray-500 border-gray-300 rounded"
-                  />
-                  <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
-                    Recordarme
-                  </label>
-                </div>
-                <div className="text-sm">
-                  <a href="#" className="font-medium text-gray-600 hover:text-gray-500">
-                    ¿Olvidó su contraseña?
-                  </a>
-                </div>
               </div>
               <button
                 type="submit"
@@ -157,7 +116,7 @@ export default function Login({ onCompanyLogin, onRegisterPerson }: LoginProps) 
           <div className="hidden md:block">
             <div className="relative h-full">
               <Image
-                src="/placeholder.svg?height=400&width=600"
+                src="/placeholder.svg"
                 alt="Paisaje americano"
                 layout="fill"
                 objectFit="cover"

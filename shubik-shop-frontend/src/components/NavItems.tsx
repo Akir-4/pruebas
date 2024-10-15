@@ -9,26 +9,22 @@ import {
     NavigationMenuViewport,
     navigationMenuTriggerStyle
 } from "@/components/ui/navigation-menu"
-import { LogOut, User } from "lucide-react"
-import { Bell } from "lucide-react"
-import { Button } from "./ui/button"
+import { LogOut, User, Bell } from "lucide-react"
 import Link from "next/link"
 import { memo } from "react"
 
-
-//Uso de React.memo para evitar renderizados innecesarios
+// Uso de React.memo para evitar renderizados innecesarios
 const NavItems = memo(() => {
-    //Definicion de iconos en variables 
-    const BellIcon = <Bell />;
-    const UserIcon = <User />;
-    const LogOutIcon = <LogOut />;
-
-
+    // Definición de iconos en variables
+    const BellIcon = <Bell aria-label="Notificaciones" />;
+    const UserIcon = <User aria-label="Perfil de usuario" />;
+    const LogOutIcon = <LogOut aria-label="Cerrar sesión" />;
 
     return (
         <div>
             <NavigationMenu>
                 <NavigationMenuList>
+                    {/* Item de notificaciones */}
                     <NavigationMenuItem>
                         <NavigationMenuTrigger>
                             {BellIcon}
@@ -40,14 +36,16 @@ const NavItems = memo(() => {
                         </NavigationMenuContent>
                     </NavigationMenuItem>
 
+                    {/* Item de perfil de usuario */}
                     <NavigationMenuItem>
-                        <Link href="/user" legacyBehavior passHref>
+                        <Link href="/buyer" legacyBehavior passHref>
                             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                                 {UserIcon}
                             </NavigationMenuLink>
                         </Link>
                     </NavigationMenuItem>
 
+                    {/* Item de cerrar sesión */}
                     <NavigationMenuItem>
                         <Link href="/logout" legacyBehavior passHref>
                             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
@@ -55,11 +53,10 @@ const NavItems = memo(() => {
                             </NavigationMenuLink>
                         </Link>
                     </NavigationMenuItem>
-
                 </NavigationMenuList>
             </NavigationMenu>
         </div>
     )
 })
 
-export default NavItems
+export default NavItems;

@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.text import slugify
+from tiendas.models import Tienda
 
 # Modelos para PRODUCTOS
 
@@ -29,7 +30,8 @@ class Producto(models.Model):
     tipo_id = models.ForeignKey(Tipo_Prenda, on_delete=models.CASCADE)  # Relación con Tipo_Prenda
     ESTADOS = [(i, i) for i in range(1, 8)]
     estado = models.IntegerField(choices=ESTADOS, default=1)
-    usuario_id = models.ForeignKey('usuario.Usuario', on_delete=models.CASCADE)  # Relación con Usuario
+    # usuario_id = models.ForeignKey('usuario.Usuario', on_delete=models.CASCADE)  # Relación con Usuario comentada
+    tienda_id = models.ForeignKey(Tienda, on_delete=models.CASCADE, related_name="productos")  # Usar tienda_id para la relación del producto
     TALLAS = (
         ('XS', 'XS'),
         ('S', 'S'),

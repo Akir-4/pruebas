@@ -1,9 +1,8 @@
-import { usuario } from './user'
-import { Subasta } from './Subasta';
+import { Usuario } from './user';
+
 export interface Puja {
     puja_id: number;
-    subasta_id: Subasta;   // Relacionado con la subasta
-    usuario_id: usuario;   // Relacionado con el usuario que hace la puja
-    monto: number;
-    fecha: string;  // O Date si luego la conviertes
+    monto: number;             // Monto de la puja
+    fecha: string;             // Fecha en que se realizó la puja
+    usuario: Usuario;          // Usuario que realizó la puja
 }

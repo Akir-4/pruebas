@@ -1,3 +1,4 @@
+import { Tienda } from "./tienda";
 // Definir la interfaz Marca
 export interface Marca {
     marca_id: number;
@@ -19,13 +20,14 @@ export interface Usuario {
 // Definir la interfaz Producto que incluye las relaciones
 export interface Producto {
     producto_id: number;
+    tienda: Tienda;
     nombre: string;
+    marca: Marca;
     marca_id: number;          // ID de la marca
     marca_nombre: string;      // Nombre de la marca
-    tipo_id: number;           // ID del tipo de prenda
+    tipo_prenda: TipoPrenda;           // ID del tipo de prenda
     tipo_nombre: string;       // Nombre del tipo de prenda
-    usuario_id: number;        // ID del usuario
-    usuario_nombre: string;    // Nombre del usuario
+    tienda_id: number;         // ID de la tienda que es dueña este producto
     estado: number;            // Estado del producto (ej: "Nuevo", "Usado")
     tamano: string;            // Tamaño del producto (ej: "M", "L", etc.)
     precio_inicial: number;    // Precio inicial del producto

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import NavBar from "@/components/NavBar";
+import { AuthProvider } from "@/auth/authContext";
 
 
 
@@ -15,13 +16,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+
     <html lang="en">
       <body
         className={`antialiased`}
       >
-        <NavBar/>
+        <NavBar />
         {children}
       </body>
     </html>
+
+
   );
 }

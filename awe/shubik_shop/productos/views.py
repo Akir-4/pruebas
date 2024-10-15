@@ -38,10 +38,10 @@ class ProductoConPujasView(generics.RetrieveAPIView):
         })
 
 class ProductoViewSet(viewsets.ModelViewSet):
-    queryset = Producto.objects.all()
+    queryset = Producto.objects.select_related('marca_id', 'tipo_id', 'tienda_id').all()
     serializer_class = ProductoSerializer
     filter_backends = [DjangoFilterBackend, OrderingFilter]  # Agregar OrderingFilter
-    filterset_fields = ['usuario_id', 'marca_id', 'estado', 'tamano', 'tipo_id']
+    filterset_fields = ['tienda_id', 'marca_id', 'estado', 'tamano', 'tipo_id']
     ordering_fields = ['precio_inicial']  # Permitir ordenar por precio
     ordering = ['precio_inicial']  # Ordenar por defecto por precio ascendente
 
