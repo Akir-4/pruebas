@@ -5,11 +5,11 @@ class Usuario(models.Model):
     usuario_id = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=100)
     usuario = models.CharField(max_length=100)
-    contrasena = models.CharField(max_length=100)  # La contraseña debería ser encriptada
+    contrasena = models.CharField(max_length=100) # La contraseña debería ser encriptada
     email = models.EmailField(max_length=100)
     direccion = models.CharField(max_length=100, null=True, blank=True)
     telefono = models.CharField(max_length=100, null=True, blank=True)
-    imagen = models.ImageField(upload_to='usuarios/fotos/', null=True, blank=True)
+    imagen = models.ImageField(upload_to='usuarios/fotos/', null=True, blank=True) # Ruta para almacenar imágenes
 
     def save(self, *args, **kwargs):
         # Encriptar la contraseña antes de guardar
@@ -18,8 +18,4 @@ class Usuario(models.Model):
         super(Usuario, self).save(*args, **kwargs)
 
     def __str__(self):
-        return self.usuario  # Aquí te refieres al campo 'usuario'
-
-    
-
-
+        return self.usuario # Aquí te refieres al campo 'usuario'
