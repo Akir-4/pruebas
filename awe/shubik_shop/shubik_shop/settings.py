@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'django_filters',
+    'rest_framework_simplejwt.token_blacklist',
+    'login',
 ]
 
 MIDDLEWARE = [
@@ -133,6 +135,24 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15), # Duración del token de acceso
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1), # Duración del token de refresh
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY, # Usamos el SECRET_KEY de tu configuración
+    'AUTH_HEADER_TYPES': ('Bearer',), # Los tokens JWT se envían en los headers como 'Bearer <token>'
+}
 
 
 # Internationalization

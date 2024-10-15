@@ -4,7 +4,7 @@ from django.contrib.auth.hashers import make_password
 class Usuario(models.Model):
     usuario_id = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=100)
-    usuario = models.CharField(max_length=100)
+    usuario = models.CharField(max_length=100, unique=True) # Hacemos que el nombre de usuario sea único
     contrasena = models.CharField(max_length=100) # La contraseña debería ser encriptada
     email = models.EmailField(max_length=100)
     direccion = models.CharField(max_length=100, null=True, blank=True)
