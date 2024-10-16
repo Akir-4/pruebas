@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
+import { errorMonitor } from 'events';
 
-export default function Registro() {
+interface RegistroProps {
+  onLogin: () => void; // Prop para manejar la navegación
+}
+
+const Registro: React.FC<RegistroProps> = ({ onLogin }) => {
   const [nombre, setNombre] = useState('');
   const [usuario, setUsuario] = useState('');
   const [email, setEmail] = useState('');
@@ -18,7 +23,7 @@ export default function Registro() {
       nombre,
       usuario,
       email,
-      contrasena,  // Asegúrate de que tu API acepte el campo 'password'
+      contrasena,
       telefono,
       direccion,
     };
@@ -36,6 +41,7 @@ export default function Registro() {
         const data = await response.json();
         setSuccess('Usuario creado con éxito!');
         console.log('Registro exitoso:', data);
+        
         // Limpiar los campos después de un registro exitoso
         setNombre('');
         setUsuario('');
@@ -43,12 +49,15 @@ export default function Registro() {
         setContrasena('');
         setTelefono('');
         setDireccion('');
+
+        // Redirigir a la vista de login
+        onLogin();
       } else {
         const errorData = await response.json();
         setError('Error al crear el usuario: ' + (errorData.detail || 'Error desconocido'));
       }
     } catch (err) {
-      setError('Error de conexión: ' + error.message);
+      setError('Error de conexión: ' + errorMonitor.message);
     }
   };
 
@@ -172,4 +181,6 @@ export default function Registro() {
       </div>
     </div>
   );
-}
+};
+
+export default Registro;

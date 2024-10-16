@@ -15,6 +15,11 @@ const AccountPage = () => {
   const showRegisterPerson = () => setView('register-person');
   const showRegisterCompany = () => setView('register-company');
 
+  // Función para manejar el registro de la empresa
+  const handleCompanyRegistrationSuccess = () => {
+    setView('login-company'); // Cambia a la vista de login de la empresa
+  };
+
   return (
     <div>
       {view === 'login' && (
@@ -27,15 +32,10 @@ const AccountPage = () => {
         <CreateAccountPerson onLogin={showLogin} />
       )}
       {view === 'register-company' && (
-        <CreateAccountCompany onCompanyLogin={showLoginCompany} />
+        <CreateAccountCompany onCompanyLogin={handleCompanyRegistrationSuccess} />
       )}
 
-      <div className="pt-4 text-center">
-        {view !== 'login' && <button onClick={showLogin}>Iniciar sesión como Persona</button>}
-        {view !== 'login-company' && <button onClick={showLoginCompany}>Iniciar sesión como Empresa</button>}
-        {view !== 'register-person' && <button onClick={showRegisterPerson}>Crear cuenta como Persona</button>}
-        {view !== 'register-company' && <button onClick={showRegisterCompany}>Crear cuenta como Empresa</button>}
-      </div>
+
     </div>
   );
 };

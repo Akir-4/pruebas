@@ -10,8 +10,6 @@ const CreateAccountCompany: React.FC<CreateAccountCompanyProps> = ({ onCompanyLo
   const [razonSocial, setRazonSocial] = useState('');
   const [rut, setRut] = useState('');
   const [password, setPassword] = useState('');
-  const [sector, setSector] = useState('');
-  const [tamano, setTamano] = useState('');
   const [direccion, setDireccion] = useState('');
   const [telefono, setTelefono] = useState('');
   const [email, setEmail] = useState('');
@@ -26,8 +24,6 @@ const CreateAccountCompany: React.FC<CreateAccountCompanyProps> = ({ onCompanyLo
       razon_social: razonSocial,
       rut,
       password: password,
-      sector,
-      tamano_empresa: tamano,
       direccion_fisica: direccion,
       telefono_principal: telefono,
       correo_electronico: email,
@@ -54,17 +50,17 @@ const CreateAccountCompany: React.FC<CreateAccountCompanyProps> = ({ onCompanyLo
         setRazonSocial('');
         setRut('');
         setPassword('');
-        setSector('');
-        setTamano('');
         setDireccion('');
         setTelefono('');
         setEmail('');
+
+        // Redirigir a LoginCompany tras un registro exitoso
+        onCompanyLogin();
       } else {
         const errorData = await response.json();
-        console.log('Error en la solicitud:', errorData); // Esto imprimirá detalles del error
+        console.log('Error en la solicitud:', errorData);
         setError('Error al crear la empresa: ' + (errorData.detail || 'Error desconocido'));
       }
-
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error inesperado');
       console.error('Error al registrar la empresa:', err);
@@ -76,9 +72,9 @@ const CreateAccountCompany: React.FC<CreateAccountCompanyProps> = ({ onCompanyLo
       <div className="bg-white p-8 rounded-lg shadow-lg max-w-4xl w-full">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="space-y-6">
-            <h1 className="text-4xl font-serif font-bold text-gray-800">Registro de Empresa</h1>
+            <h1 className="text-4xl font-serif font-bold text-gray-800">Registro de Tienda</h1>
             <p className="text-gray-600">
-              Registre su empresa para acceder a nuestros servicios empresariales.
+              Registre su Tienda para acceder a nuestros servicios.
             </p>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
@@ -121,32 +117,6 @@ const CreateAccountCompany: React.FC<CreateAccountCompanyProps> = ({ onCompanyLo
                 />
               </div>
               <div>
-                <label htmlFor="sector" className="block text-sm font-medium text-gray-700">
-                  Sector o Industria
-                </label>
-                <input
-                  type="text"
-                  id="sector"
-                  value={sector}
-                  onChange={(e) => setSector(e.target.value)}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-gray-500 focus:border-gray-500"
-                  required
-                />
-              </div>
-              <div>
-                <label htmlFor="tamano" className="block text-sm font-medium text-gray-700">
-                  Tamaño de la Empresa
-                </label>
-                <input
-                  type="text"
-                  id="tamano"
-                  value={tamano}
-                  onChange={(e) => setTamano(e.target.value)}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-gray-500 focus:border-gray-500"
-                  required
-                />
-              </div>
-              <div>
                 <label htmlFor="direccion" className="block text-sm font-medium text-gray-700">
                   Dirección Física
                 </label>
@@ -174,7 +144,7 @@ const CreateAccountCompany: React.FC<CreateAccountCompanyProps> = ({ onCompanyLo
               </div>
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                  Correo Electrónico Corporativo
+                  Correo Electrónico 
                 </label>
                 <input
                   type="email"
