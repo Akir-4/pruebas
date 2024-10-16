@@ -23,7 +23,7 @@ export default function LoginCompany({ onReturnToLogin, onRegisterCompany }: Log
     };
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/tiendas/tiendas/', {
+      const response = await fetch(`http://127.0.0.1:8000/api/login/tienda/?email=${email}&nombre_legal=${nombre_Legal}&password=${password}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
