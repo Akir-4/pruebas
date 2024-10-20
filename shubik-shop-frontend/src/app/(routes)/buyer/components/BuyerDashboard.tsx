@@ -1,10 +1,10 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { usuario } from "../../../../../types/user"; // Asegúrate de que la ruta es correcta
+import { Usuario } from "../../../../../types/user"; // Asegúrate de que la ruta es correcta
 
 const BuyerDashboard = () => {
-  const [comprador, setComprador] = useState<usuario | null>(null); // Datos del usuario logueado
+  const [comprador, setComprador] = useState<Usuario | null>(null); // Datos del usuario logueado
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -14,7 +14,7 @@ const BuyerDashboard = () => {
         const userId = user.usuario_id; // Obtener el usuario_id
 
         try {
-          const response = await axios.get<usuario>(`http://127.0.0.1:8000/api/usuarios/usuarios/${userId}/`); // Llamada a la API
+          const response = await axios.get<Usuario>(`http://127.0.0.1:8000/api/usuarios/usuarios/${userId}/`); // Llamada a la API
           setComprador(response.data); // Establecer los datos del usuario
           console.log("Datos del usuario:", response.data); // Log de los datos del usuario
         } catch (error) {
@@ -42,9 +42,9 @@ const BuyerDashboard = () => {
       <div>
         <p>Nombre: {comprador.nombre}</p>
         <p>Email: {comprador.email}</p>
-        <p>Usuario: {comprador.usuario}</p>
+        <p>Usuario: {comprador.usuario_id}</p>
         <p>Teléfono: {comprador.telefono}</p>
-        <p>Descripción: {comprador.descripcion || 'Sin descripción'}</p>
+        <p>Descripción: {comprador.direccion || 'Sin descripción'}</p>
         {comprador.imagen && (
           <div>
             <h2>Imagen de perfil:</h2>

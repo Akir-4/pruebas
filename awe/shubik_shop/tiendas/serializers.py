@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Tienda
+from .models import Tienda, Bodega
 
 class TiendaSerializer(serializers.ModelSerializer):
     class Meta:
@@ -12,3 +12,9 @@ class TiendaSerializer(serializers.ModelSerializer):
     password = serializers.CharField(required=False)
     direccion_fisica = serializers.CharField(required=False)
     telefono_principal = serializers.CharField(required=False)
+
+
+class BodegaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Bodega
+        fields = '__all__'

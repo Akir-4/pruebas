@@ -1,5 +1,7 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, generics, status
+from rest_framework.response import Response
 from .models import Subasta, Puja, Transaccion
+from tiendas.models import Tienda
 from .serializers import SubastaSerializer, PujaSerializer, TransaccionSerializer
 from django_filters.rest_framework import DjangoFilterBackend
 from .filters import SubastaFilter  # Importar el filtro
@@ -26,9 +28,11 @@ class PujaViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = self.queryset
-        producto_id = self.request.query_params.get('producto_id', None)
-        if producto_id is not None:
-            queryset = queryset.filter(puja__subasta__producto=producto_id)
+        # Obtenemos el subasta_id de los parámetros de la URL
+        subasta_id = self.request.query_params.get('subasta_id', None)
+        if subasta_id is not None:
+            # Filtramos las pujas por subasta_id
+            queryset = queryset.filter(subasta_id=subasta_id)
         return queryset
 
 class TransaccionViewSet(viewsets.ModelViewSet):

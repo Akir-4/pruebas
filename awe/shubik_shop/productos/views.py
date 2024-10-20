@@ -1,5 +1,6 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from .models import Producto, Tipo_Prenda, Marca
+from tiendas.models import Tienda
 from compras.models  import Puja, Subasta
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics
@@ -98,3 +99,27 @@ class ProductoListView(generics.ListAPIView):
             queryset = queryset.order_by('-precio_inicial')
 
         return queryset
+
+
+class CrearProductoYAsignarABodegaView(generics.CreateAPIView):
+    serializer_class = ProductoSerializer
+
+    def create(self, request, *args, **kwargs):
+        tienda_id = kwargs.get('tienda_id')  # Obtenemos el ID de la tienda desde la URL o los argumentos.
+        try:
+            # Verificamos si la tienda existe
+            tienda = Tienda.objects.get(pk=tienda_id)
+        except Tienda.DoesNotExist:
+            return Response({"detail": "Tienda no encontrada"}, status=status.HTTP_404_NOT_FOUND)
+        
+        # Guardamos el producto usando el serializer
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        producto = serializer.save()
+
+        # Ahora, creamos la instancia de Bodega asociada al producto y la tienda
+        Bodega.objects.create(tienda_id=tienda, producto_id=producto)
+
+        # Devolvemos la respuesta con los datos del producto y la bodega creada
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)

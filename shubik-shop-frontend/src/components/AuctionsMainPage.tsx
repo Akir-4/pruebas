@@ -64,7 +64,6 @@ const AuctionsMainPage: React.FC<AuctionsMainPageProps> = ({ productos, loading,
           nombre,
           marca_nombre,
           tipo_nombre,
-          usuario_nombre,
           estado,
           slug,
           tamano,
@@ -79,7 +78,7 @@ const AuctionsMainPage: React.FC<AuctionsMainPageProps> = ({ productos, loading,
         const bgColor = estado === 1 ? 'bg-[#228B22] text-white' :
           estado === 2 ? 'bg-[#3CB371]' :
             estado === 3 ? 'bg-[#4682B4] text-white' :
-              estado === 4 ? 'bg-[#5F9EA0] text-white' :
+              estado === 4 ? 'bg-[#5F9EA0]' :
                 estado === 5 ? 'bg-[#9370DB]' :
                   estado === 6 ? 'bg-[#B0C4DE]' :
                     estado === 7 ? 'bg-[#708090]' :
@@ -88,7 +87,7 @@ const AuctionsMainPage: React.FC<AuctionsMainPageProps> = ({ productos, loading,
         const focusColor = estado === 1 ? 'hover:bg-[#228B22] hover:text-white' :
           estado === 2 ? 'hover:bg-[#3CB371]' :
             estado === 3 ? 'hover:bg-[#4682B4] hover:text-white' :
-              estado === 4 ? 'hover:bg-[#5F9EA0] hover:text-white' :
+              estado === 4 ? 'hover:bg-[#5F9EA0]' :
                 estado === 5 ? 'hover:bg-[#9370DB]' :
                   estado === 6 ? 'hover:bg-[#B0C4DE]' :
                     estado === 7 ? 'hover:bg-[#708090]' :

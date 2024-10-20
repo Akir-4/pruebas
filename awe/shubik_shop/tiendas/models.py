@@ -13,3 +13,13 @@ class Tienda(models.Model):
 
     def __str__(self):
         return self.nombre_legal
+
+
+class Bodega(models.Model):
+    """Modelo para representar una bodega."""
+    bodega_id = models.AutoField(primary_key=True)
+    tienda_id = models.ForeignKey(Tienda, on_delete=models.CASCADE)
+    producto_id = models.ForeignKey('productos.Producto', on_delete=models.CASCADE, null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.tienda_id.nombre_legal} - Producto: {self.producto_id.nombre if self.producto_id else "Sin producto"}'

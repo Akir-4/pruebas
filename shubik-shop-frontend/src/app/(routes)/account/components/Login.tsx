@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';  // Importamos el hook useRouter
 
 interface LoginProps {
   onCompanyLogin: () => void;   // Función para cambiar a la vista de LoginCompany
@@ -8,9 +9,10 @@ interface LoginProps {
 }
 
 export default function Login({ onCompanyLogin, onRegisterPerson }: LoginProps) {
+  const router = useRouter();  // Iniciamos el hook useRouter
   const [usuario, setUsuario] = useState<string>('');  // Añadimos tipado explícito a los estados
   const [contrasena, setContrasena] = useState<string>('');
-  const [error, setError] = useState<string>('');
+  const [error, setError] = useState<string | null>(null);  // Actualización: Permitir que el error sea null
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,6 +42,14 @@ export default function Login({ onCompanyLogin, onRegisterPerson }: LoginProps) 
       localStorage.setItem('refresh_token', data.refresh);
 
       console.log('Inicio de sesión exitoso');
+
+      // Asegura que la redirecion sea primero que la recarga
+
+      router.push('/');  // Redirigir a la página principal
+      setTimeout(() => {
+        window.location.reload();  // Recargar la página
+      }, 100);  // Pequeño retraso de 100ms para asegurar la redirección antes de recargar
+
 
     } catch (err: any) {  // Usamos any porque no siempre es un Error
       if (err instanceof Error) {
