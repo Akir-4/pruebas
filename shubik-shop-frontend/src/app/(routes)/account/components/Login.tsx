@@ -20,7 +20,7 @@ export default function Login({ onCompanyLogin, onRegisterPerson }: LoginProps) 
 
     try {
       // Envía los parámetros en la URL (como en Postman)
-      const response = await fetch(`http://127.0.0.1:8000/api/login/?usuario=${usuario}&contrasena=${contrasena}`, {
+      const response = await fetch('http://127.0.0.1:8000/api/login/?usuario=${usuario}&contrasena=${contrasena}/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json', // El encabezado está dentro del objeto
@@ -43,13 +43,8 @@ export default function Login({ onCompanyLogin, onRegisterPerson }: LoginProps) 
 
       console.log('Inicio de sesión exitoso');
 
-      // Asegura que la redirecion sea primero que la recarga
-
-      router.push('/');  // Redirigir a la página principal
-      setTimeout(() => {
-        window.location.reload();  // Recargar la página
-      }, 100);  // Pequeño retraso de 100ms para asegurar la redirección antes de recargar
-
+      // Redirigir al menú principal
+      router.push('/');  // Redirigir al menú en 'http://localhost:3000'
 
     } catch (err: any) {  // Usamos any porque no siempre es un Error
       if (err instanceof Error) {

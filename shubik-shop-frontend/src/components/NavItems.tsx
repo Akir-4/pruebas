@@ -9,12 +9,13 @@ import {
 } from "@/components/ui/navigation-menu";
 import { LogOut, User, Bell } from "lucide-react";
 import Link from "next/link";
-import { memo, useEffect, useState } from "react";  // Añadir useEffect y useState
+import { memo, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { jwtDecode } from "jwt-decode";  // Importar el decodificador JWT
 
 const NavItems = memo(() => {
     const router = useRouter();
-    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);  // Estado para autenticación
+    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
     // Función para manejar el cierre de sesión
     const handleLogout = () => {
@@ -47,6 +48,28 @@ const NavItems = memo(() => {
         };
     }, []);
 
+    // Función para manejar el clic en el perfil del usuario
+    const handleProfileClick = () => {
+        const token = localStorage.getItem("access_token");
+        if (token) {
+            try {
+                const decodedToken = jwtDecode<{ user_id: string }>(token);
+                console.log("Token decodificado:", decodedToken);  // Verifica si el token tiene el campo correcto
+    
+                if (decodedToken.user_id) {
+                    // No necesitamos pasar el userId en la URL, solo redirigimos a /buyer
+                    router.push('/buyer');
+                } else {
+                    console.error("El token no contiene 'user_id'.");
+                }
+            } catch (error) {
+                console.error("Error al decodificar el token:", error);
+            }
+        } else {
+            console.error("Token no encontrado en localStorage.");
+        }
+    };
+
     // Definición de iconos en variables
     const BellIcon = <Bell aria-label="Notificaciones" />;
     const UserIcon = <User aria-label="Perfil de usuario" />;
@@ -70,12 +93,10 @@ const NavItems = memo(() => {
 
                     {/* Item de perfil de usuario */}
                     {isAuthenticated && (
-                        <NavigationMenuItem>
-                            <Link href="/buyer" legacyBehavior passHref>
-                                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                                    {UserIcon}
-                                </NavigationMenuLink>
-                            </Link>
+                        <NavigationMenuItem onClick={handleProfileClick}>
+                            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                                {UserIcon}
+                            </NavigationMenuLink>
                         </NavigationMenuItem>
                     )}
 

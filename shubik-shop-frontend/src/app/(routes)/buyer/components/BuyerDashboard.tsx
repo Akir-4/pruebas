@@ -1,31 +1,33 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Usuario } from "../../../../../types/user"; // Asegúrate de que la ruta es correcta
+import { jwtDecode } from "jwt-decode";
+import { Usuario } from "../../../../../types/user";  // Asegúrate de que la ruta es correcta
 
 const BuyerDashboard = () => {
-  const [comprador, setComprador] = useState<Usuario | null>(null); // Datos del usuario logueado
+  const [comprador, setComprador] = useState<Usuario | null>(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
-      const storedUser = localStorage.getItem('usuario'); // Obtener el usuario desde localStorage
-      if (storedUser) {
-        const user = JSON.parse(storedUser);
-        const userId = user.usuario_id; // Obtener el usuario_id
-
+      const token = localStorage.getItem("access_token");
+      if (token) {
         try {
-          const response = await axios.get<Usuario>(`http://127.0.0.1:8000/api/usuarios/usuarios/${userId}/`); // Llamada a la API
-          setComprador(response.data); // Establecer los datos del usuario
-          console.log("Datos del usuario:", response.data); // Log de los datos del usuario
+          const decodedToken = jwtDecode<{ user_id: string }>(token);
+          const userId = decodedToken.user_id;
+
+          if (userId) {
+            const response = await axios.get<Usuario>(`http://127.0.0.1:8000/api/usuarios/usuarios/${userId}/`);
+            setComprador(response.data);
+          } else {
+            console.error("El token no contiene 'user_id'.");
+          }
         } catch (error) {
-          console.error("Error al cargar los datos del usuario:", error);
+          console.error("Error al decodificar el token o cargar los datos del usuario:", error);
         }
-      } else {
-        console.log("Usuario no encontrado en localStorage");
       }
     };
 
-    fetchUserData(); // Ejecutar la función para cargar los datos
+    fetchUserData();
   }, []);
 
   if (!comprador) {

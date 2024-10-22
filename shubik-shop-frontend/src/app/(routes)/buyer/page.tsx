@@ -1,6 +1,6 @@
 import BuyerDashboard from './components/BuyerDashboard';
 
-const SellerPage = () => {
+const BuyerPage = () => {
   return (
     <div>
       <BuyerDashboard />
@@ -8,4 +8,4 @@ const SellerPage = () => {
   );
 };
 
-export default SellerPage;
+export default BuyerPage;
