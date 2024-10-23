@@ -19,34 +19,50 @@ class TiendaSerializer(serializers.ModelSerializer):
         ref_name = 'ProductoTiendaSerializer'  # Nombre único para este serializer
 
 class ProductoSerializer(serializers.ModelSerializer):
-    marca = MarcaSerializer(read_only=True, source='marca_id')
-    tipo_prenda = Tipo_PrendaSerializer(read_only=True, source='tipo_id')  # Cambiamos a un serializador para tipo_prenda
-    tienda = TiendaSerializer(read_only=True, source='tienda_id')  # Cambiamos a un serializador para tienda
+    marca = MarcaSerializer(read_only=True, source='marca_id')  # Solo para leer los detalles completos de Marca
+    tipo_prenda = Tipo_PrendaSerializer(read_only=True, source='tipo_id')  # Solo para leer los detalles completos de Tipo Prenda
+    tienda = TiendaSerializer(read_only=True, source='tienda_id')  # Solo para leer los detalles completos de Tienda
+
+    # Campos para aceptar entradas al crear el producto
+    marca_id = serializers.PrimaryKeyRelatedField(queryset=Marca.objects.all(), write_only=True)
+    tipo_id = serializers.PrimaryKeyRelatedField(queryset=Tipo_Prenda.objects.all(), write_only=True)
+    tienda_id = serializers.PrimaryKeyRelatedField(queryset=Tienda.objects.all(), write_only=True)
 
     class Meta:
         model = Producto
         fields = [
-            'producto_id', 
-            'nombre', 
-            'marca',  # Esto traerá los detalles completos de Marca
-            'tipo_prenda',  # Cambiamos para usar Tipo_PrendaSerializer
-            'tienda',  # Cambiamos para usar TiendaSerializer
-            'estado', 
-            'tamano', 
-            'precio_inicial', 
-            'precio_ofertado', 
-            'imagen_1', 
-            'imagen_2', 
-            'imagen_3', 
-            'imagen_4', 
-            'slug', 
+            'producto_id',
+            'nombre',
+            'marca',  # Detalles completos de la marca
+            'tipo_prenda',  # Detalles completos de tipo prenda
+            'tienda',  # Detalles completos de la tienda
+            'marca_id',  # Campo para aceptar marca_id al crear
+            'tipo_id',  # Campo para aceptar tipo_id al crear
+            'tienda_id',  # Campo para aceptar tienda_id al crear
+            'estado',
+            'tamano',
+            'precio_inicial',
+            'precio_ofertado',
+            'imagen_1',
+            'imagen_2',
+            'imagen_3',
+            'imagen_4',
+            'slug',
             'descripcion'
         ]
 
-    def get_images(self, obj):
-        return [
-            obj.imagen_1.url if obj.imagen_1 else None,
-            obj.imagen_2.url if obj.imagen_2 else None,
-            obj.imagen_3.url if obj.imagen_3 else None,
-            obj.imagen_4.url if obj.imagen_4 else None,
-        ]
+    def create(self, validated_data):
+        # Aquí extraemos los campos relacionales como IDs
+        marca_id = validated_data.pop('marca_id')
+        tipo_id = validated_data.pop('tipo_id')
+        tienda_id = validated_data.pop('tienda_id')
+
+        # Creamos el objeto Producto usando los IDs correctos
+        producto = Producto.objects.create(
+            marca_id=marca_id,  # Pasamos el ID de Marca
+            tipo_id=tipo_id,  # Pasamos el ID de Tipo Prenda
+            tienda_id=tienda_id,  # Pasamos el ID de Tienda
+            **validated_data  # Pasamos los demás datos restantes
+        )
+
+        return producto

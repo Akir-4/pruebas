@@ -10,6 +10,8 @@ from django.shortcuts import get_object_or_404
 from .serializers import ProductoSerializer, Tipo_PrendaSerializer, MarcaSerializer
 from compras.serializers import PujaSerializer
 from rest_framework.filters import OrderingFilter
+from tiendas.models import Bodega
+
 
 class ProductoConPujasView(generics.RetrieveAPIView):
     queryset = Producto.objects.all()
@@ -118,7 +120,7 @@ class CrearProductoYAsignarABodegaView(generics.CreateAPIView):
         producto = serializer.save()
 
         # Ahora, creamos la instancia de Bodega asociada al producto y la tienda
-        Bodega.objects.create(tienda_id=tienda, producto_id=producto)
+        Bodega.objects.create(tienda_id=tienda, producto_id=producto)  # Pasar los objetos completos, no los IDs
 
         # Devolvemos la respuesta con los datos del producto y la bodega creada
         headers = self.get_success_headers(serializer.data)

@@ -30,7 +30,6 @@ class Producto(models.Model):
     tipo_id = models.ForeignKey(Tipo_Prenda, on_delete=models.CASCADE)  # Relación con Tipo_Prenda
     ESTADOS = [(i, i) for i in range(1, 8)]
     estado = models.IntegerField(choices=ESTADOS, default=1)
-    # usuario_id = models.ForeignKey('usuario.Usuario', on_delete=models.CASCADE)  # Relación con Usuario comentada
     tienda_id = models.ForeignKey(Tienda, on_delete=models.CASCADE, related_name="productos")  # Usar tienda_id para la relación del producto
     TALLAS = (
         ('XS', 'XS'),
@@ -43,7 +42,7 @@ class Producto(models.Model):
     )
     tamano = models.CharField(max_length=4, choices=TALLAS, default='M')
     precio_inicial = models.IntegerField()
-    precio_ofertado = models.IntegerField()
+    precio_ofertado = models.IntegerField(null=True, blank=True)  # Permitir valores nulos y blancos
     imagen_1 = models.ImageField(upload_to='productos/fotos/', null=True, blank=True)
     imagen_2 = models.ImageField(upload_to='productos/fotos/', null=True, blank=True, default=None)
     imagen_3 = models.ImageField(upload_to='productos/fotos/', null=True, blank=True, default=None)

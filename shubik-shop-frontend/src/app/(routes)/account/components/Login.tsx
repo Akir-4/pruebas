@@ -20,7 +20,7 @@ export default function Login({ onCompanyLogin, onRegisterPerson }: LoginProps) 
 
     try {
       // Envía los parámetros en la URL (como en Postman)
-      const response = await fetch('http://127.0.0.1:8000/api/login/?usuario=${usuario}&contrasena=${contrasena}/', {
+      const response = await fetch(`http://127.0.0.1:8000/api/login/?usuario=${usuario}&contrasena=${contrasena}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json', // El encabezado está dentro del objeto
