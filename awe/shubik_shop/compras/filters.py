@@ -10,7 +10,7 @@ class SubastaFilter(django_filters.FilterSet):
 
     ordering = django_filters.OrderingFilter(
         fields=(
-            ('producto_id__precio_inicial', 'precio_inicial'),
+            ('precio_inicial', 'precio_inicial'),
         ),
     )
 

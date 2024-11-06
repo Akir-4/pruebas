@@ -49,8 +49,8 @@ def upload_image_to_blob(file):
         
         logger.info(f"Imagen subida con éxito: {file_name}")
         
-        # Retornar solo el nombre del archivo
-        return {"file_name": file_name}
+        # Retornar la URL del archivo subido
+        return {"file_url": f"https://{settings.AZURE_ACCOUNT_NAME}.blob.core.windows.net/{settings.AZURE_CONTAINER}/{file_name}"}
     except Exception as e:
         logger.error(f"Error al subir la imagen: {e}")  # Añadir logging aquí
         return None

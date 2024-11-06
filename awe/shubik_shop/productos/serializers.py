@@ -41,8 +41,6 @@ class ProductoSerializer(serializers.ModelSerializer):
             'tienda_id',  # Campo para aceptar tienda_id al crear
             'estado',
             'tamano',
-            'precio_inicial',
-            'precio_ofertado',
             'imagen_1',
             'imagen_2',
             'imagen_3',
@@ -50,6 +48,13 @@ class ProductoSerializer(serializers.ModelSerializer):
             'slug',
             'descripcion'
         ]
+
+    def validate_tamano(self, value):
+        # Verificar si la talla proporcionada es válida
+        valid_sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL']
+        if value not in valid_sizes:
+            raise serializers.ValidationError(f"Tamaño '{value}' no es válido. Seleccione una talla válida.")
+        return value
 
     def create(self, validated_data):
         # Aquí extraemos los campos relacionales como IDs

@@ -1,7 +1,7 @@
 from rest_framework import viewsets, status
 from .models import Producto, Tipo_Prenda, Marca
 from tiendas.models import Tienda
-from compras.models  import Puja, Subasta
+from compras.models import Puja, Subasta
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics
 from django.db.models import Prefetch
@@ -19,7 +19,7 @@ class ProductoConPujasView(generics.RetrieveAPIView):
 
     def get(self, request, *args, **kwargs):
         # Obtener el producto por su ID
-        producto_id = self.kwargs['producto_id']  
+        producto_id = self.kwargs['producto_id']
         producto = get_object_or_404(
             Producto.objects.prefetch_related(
                 Prefetch('subasta_set__puja_set', queryset=Puja.objects.all())
@@ -40,13 +40,14 @@ class ProductoConPujasView(generics.RetrieveAPIView):
             'pujas': pujas,
         })
 
+
 class ProductoViewSet(viewsets.ModelViewSet):
     queryset = Producto.objects.select_related('marca_id', 'tipo_id', 'tienda_id').all()
     serializer_class = ProductoSerializer
-    filter_backends = [DjangoFilterBackend, OrderingFilter]  # Agregar OrderingFilter
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_fields = ['tienda_id', 'marca_id', 'estado', 'tamano', 'tipo_id']
-    ordering_fields = ['precio_inicial']  # Permitir ordenar por precio
-    ordering = ['precio_inicial']  # Ordenar por defecto por precio ascendente
+    ordering_fields = ['nombre']  # Cambié a 'nombre', ya que 'precio_inicial' no está en Producto
+    ordering = ['nombre']  # Ordenar por defecto por nombre ascendente
 
     # listar producto por nombre
     def get_queryset(self):
@@ -56,49 +57,53 @@ class ProductoViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(nombre__icontains=nombre)  # Usa 'icontains' para coincidencias parciales e insensibles a mayúsculas
         return queryset
 
+
 # buscar solo por el slug del producto   
 class ProductoDetailView(generics.RetrieveAPIView):
     queryset = Producto.objects.all()
     serializer_class = ProductoSerializer
     lookup_field = 'slug'  # Indica que usaremos el campo 'slug' para buscar el producto
-    
+
+
 class MarcaViewSet(viewsets.ModelViewSet):
     queryset = Marca.objects.all()
     serializer_class = MarcaSerializer
+
 
 class Tipo_PrendaViewSet(viewsets.ModelViewSet):
     queryset = Tipo_Prenda.objects.all()
     serializer_class = Tipo_PrendaSerializer
 
+
 class ProductoListView(generics.ListAPIView):
     serializer_class = ProductoSerializer
-    filter_backends = [DjangoFilterBackend, OrderingFilter]  # Agregar OrderingFilter para permitir ordenación
-    filterset_fields = ['tipo_id', 'estado']  # Agregar filtro por estado
-    ordering_fields = ['precio_inicial']  # Agregar campo para ordenar por precio
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
+    filterset_fields = ['tipo_id', 'estado', 'marca_id']
+    ordering_fields = ['nombre']  # Cambié a 'nombre', ya que 'precio_inicial' no está en Producto
 
     def get_queryset(self):
         queryset = Producto.objects.all()
 
-        # Filtrar por tipo de prenda si el parámetro está presente en la consulta
+        # Filtrar por tipo de prenda, estado, y marca si están presentes en la consulta
         tipo = self.request.query_params.get('tipo_id', None)
         estado = self.request.query_params.get('estado', None)
         marca = self.request.query_params.get('marca', None)
 
         if tipo:
-            queryset = queryset.filter(tipo_id=tipo)  # Esto es para filtrar por tipo de producto
+            queryset = queryset.filter(tipo_id=tipo)
 
         if estado:
-            queryset = queryset.filter(estado=estado)  # y esto para filtrar por estado del producto
+            queryset = queryset.filter(estado=estado)
 
-        if estado:
-            queryset = queryset.filter(marca=marca)  # y esto para filtrar por marca del producto
+        if marca:
+            queryset = queryset.filter(marca_id=marca)
 
-        # Ordenar por precio
-        ordering = self.request.query_params.get('ordering', 'precio_inicial')
-        if ordering == 'precio_inicial':
-            queryset = queryset.order_by('precio_inicial')
-        elif ordering == '-precio_inicial':
-            queryset = queryset.order_by('-precio_inicial')
+        # Ordenar por nombre, ya que precio_inicial no existe en Producto
+        ordering = self.request.query_params.get('ordering', 'nombre')
+        if ordering == 'nombre':
+            queryset = queryset.order_by('nombre')
+        elif ordering == '-nombre':
+            queryset = queryset.order_by('-nombre')
 
         return queryset
 

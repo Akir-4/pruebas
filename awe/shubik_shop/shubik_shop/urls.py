@@ -35,6 +35,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('login.urls')),
     path('api/', include('logintienda.urls')),
+    path('pagos/', include('pagos.urls')),
 ]
 
 

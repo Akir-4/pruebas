@@ -20,6 +20,7 @@ class LoginView(APIView):
                 return Response({
                     'refresh': str(refresh),
                     'access': str(refresh.access_token),
+                    'is_admin': user.es_admin()  # Añadir si es administrador
                 })
             else:
                 return Response({"error": "Contraseña incorrecta"}, status=401)

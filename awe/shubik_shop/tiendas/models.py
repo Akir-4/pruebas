@@ -10,6 +10,7 @@ class Tienda(models.Model):
     direccion_fisica = models.TextField()
     telefono_principal = models.CharField(max_length=20)
     correo_electronico = models.EmailField()
+    Logo = models.ImageField(upload_to='usuarios/fotos/', null=True, blank=True)
 
     def __str__(self):
         return self.nombre_legal

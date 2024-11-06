@@ -9,4 +9,5 @@ router.register(r'transacciones', TransaccionViewSet, basename='transaccion')
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('pujas/subastas-usuario/<int:usuario_id>/', PujaViewSet.as_view({'get': 'get_subastas_por_usuario'}), name='subastas-usuario')
 ]

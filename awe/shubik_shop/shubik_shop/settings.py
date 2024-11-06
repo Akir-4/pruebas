@@ -9,13 +9,20 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-import os
+
 from pathlib import Path
 from os.path import join
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+from transbank.webpay.webpay_plus.transaction import Transaction
+from transbank.common.integration_type import IntegrationType
 
+
+# Configurar Transbank manualmente para el entorno de pruebas
+Transaction.commerce_code = "597055555532"
+Transaction.api_key = "597055555532"
+Transaction.integration_type = IntegrationType.TEST
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -32,8 +39,6 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'rest_framework_simplejwt',
-    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -41,44 +46,36 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'drf_yasg',
-    'storages',
     'compras',
     'usuario',
     'productos',
     'tiendas',
     'rest_framework',
+    'corsheaders',
     'django_filters',
     'rest_framework_simplejwt.token_blacklist',
     'login',
     'notificacion',
+    'pagos',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     
-    
-]
-
-CORS_ALLOW_HEADERS = [
-    'content-type',
-    'Authorization',
-    'X-Requested-With',
-    'accept',
-    'origin',
-    'Access-Control-Allow-Origin',
-    'X-CSRFToken',
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True  # Permitir todos los orígenes
 
-CORS_ALLOW_CREDENTIALS = True
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:3000",  # Agregar también como origen confiable para CSRF
+]
 
 ROOT_URLCONF = 'shubik_shop.urls'
 
@@ -107,41 +104,31 @@ WSGI_APPLICATION = 'shubik_shop.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 #
 #respaldo de la base de datos
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'shubik',
+#         'USER': 'postgres',
+#         'PASSWORD': '1234',
+#         'HOST': '190.44.152.202',  # o la dirección de tu servidor de base de datos
+#         'PORT': '5432',       # puerto por defecto de PostgreSQL
+#     }
+# }
+
 DATABASES = {
-     'default': {
-         'ENGINE': 'django.db.backends.postgresql',
-         'NAME': 'prueba',
-         'USER': 'postgres',
-         'PASSWORD': '1234',
-         'HOST': '190.44.152.202',  # o la dirección de tu servidor de base de datos
-         'PORT': '5432',        #puerto por defecto de PostgreSQL
-     }
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'shubik',  # El nombre de tu base de datos
+        'USER': 'postgres',
+        'PASSWORD': '1234567890.a',
+        'HOST': 'shubik.postgres.database.azure.com',
+        'PORT': '5432',  # Puerto por defecto
+        'OPTIONS': {
+            'sslmode': 'require',  # Opcional, pero recomendado para mayor seguridad
+        },
+    }
 }
 
-#DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.postgresql',
-#        'NAME': 'shubik',  # El nombre de tu base de datos
-#        'USER': 'postgres',
-#        'PASSWORD': '1234567890.a',
-#        'HOST': 'shubik.postgres.database.azure.com',
-#        'PORT': '5432',  # Puerto por defecto
-#        'OPTIONS': {
-#            'sslmode': 'require',  # Opcional, pero recomendado para mayor seguridad
-#        },
-#    }
-#}
-
-
-#DEFAULT_FILE_STORAGE = 'storages.backends.azure_storage.AzureStorage'
-#AZURE_ACCOUNT_NAME = 'shubikimagenes'  # Tu nombre de cuenta de Azure
-#AZURE_CONTAINER = 'fotos'  # Nombre del contenedor
-#AZURE_ACCOUNT_KEY = 'TVmYEyhm0n6puZ4SyIoYJA4QjblRUPxhukIco0F0OCQAOb6x26PjFBbAiixAGPz2iUZTUQ07KCTA+AStSX1Y5A=='  # Tu clave de cuenta
-#AZURE_CUSTOM_DOMAIN = f'{AZURE_ACCOUNT_NAME}.blob.core.windows.net'
-#AZURE_STORAGE_CONNECTION_STRING = 'DefaultEndpointsProtocol=https;AccountName=shubikimagenes;AccountKey=TVmYEyhm0n6puZ4SyIoYJA4QjblRUPxhukIco0F0OCQAOb6x26PjFBbAiixAGPz2iUZTUQ07KCTA+AStSX1Y5A==;EndpointSuffix=core.windows.net'
-#AZURE_CONTAINER_NAME = 'fotos'
-MEDIA_URL = os.path.join(BASE_DIR, 'media')
-MEDIA_ROOT = '/media/'
 
 
 # Password validation
@@ -165,7 +152,6 @@ AUTH_PASSWORD_VALIDATORS = [
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
     ),
 }
 
